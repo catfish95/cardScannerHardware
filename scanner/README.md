@@ -36,8 +36,24 @@ The scanner has been redesigned with the following changes from the original ver
 - Dual Camera Module (connected to RPi 5)
 
 ### Power & Connectivity
-- Power supply suitable for RPi 5 and RPi Pico
+- 12V Power Supply (1A minimum)
 - Network connectivity (Ethernet or Wi-Fi) for server communication
+
+### Sensing & Control
+- Light Dependent Resistor (LDR) for card position detection
+- Microphone module for app trigger detection
+- Piezo buzzer for audio feedback
+- 7-segment display for card count visualization
+- Control buttons (start/stop and reset)
+
+### Lighting
+- Neopixel LED ring for optimal card illumination
+- 3D-printed diffuser for soft, even lighting
+
+### Mechanical
+- Motor for card feeder mechanism
+- Motor driver (L298N H-bridge recommended) for motor control
+- Card separation mechanism using friction feeder principle
 
 ## Directory Structure
 
@@ -69,12 +85,67 @@ The RPi 5 software includes:
 - Server API communication
 - Application logic and card database queries
 
+## Hardware Control System
+
+### Control Logic
+The Raspberry Pi Pico manages precise control of the card feeding process:
+
+1. **Card Detection**: LDR (Light Dependent Resistor) detects gaps between cards using ambient light changes
+2. **Motor Activation**: Triggered by the scanning app via audio signal (microphone module detects tone)
+3. **Motion Control**: Motor drives exactly one card forward until the LDR detects the next gap
+4. **Automatic Stop**: Motor stops when card gap is detected, preventing multiple-card feeds
+5. **Feedback**: Piezo buzzer and LED ring provide visual and audio feedback
+
+### Lighting System
+- **Neopixel LED Ring**: Provides optimized illumination for card scanning
+- **Dynamic Adjustment**: LEDs dim slightly after card feed if scan doesn't complete, reducing glare and reflections
+- **Soft Illumination**: 3D-printed diffuser spreads light evenly, minimizing harsh shadows
+- **Color Strategy**: Red light works best for Magic: The Gathering cards (reduces glare on glossy surfaces)
+
+### User Interface Components
+- **7-Segment Display**: Shows count of scanned cards in real-time
+- **Start/Stop Button**: Pause scanning to make adjustments
+- **Reset Button**: Clear card counter and restart
+- **Piezo Buzzer**: Audio alerts for errors and system status
+
 ## Deployment
 
 The system communicates with the `cardScannerServer` backend for:
 - Card identification and database lookup
 - User management
 - Scanning history and analytics
+
+## 3D Printing
+
+### Print Settings
+✅ Infill: 20%
+✅ Perimeter: 2 exterior walls
+✅ Top and bottom layers: 3
+
+### Material Recommendations
+- **Material**: PLA (Polylactic Acid)
+- **Color**: White filament (critical for card detection - the scanner app relies on color differentiation between white plastic and card edges)
+- **Build Plate Size**: Minimum 220 x 220 mm
+
+### Important Note
+White filament is essential throughout the scanner, particularly in the scanning area. The card detection logic depends on distinguishing between the white mechanical components and the colored card edges.
+
+## Card Separation Mechanism
+
+The scanner uses a friction feeder mechanism to ensure reliable single-card separation:
+
+### Principle
+- Based on the friction feeding principle (proven design from similar applications)
+- Achieves 100% reliability when properly calibrated
+- Prevents multiple cards from being fed simultaneously
+
+### Adjuster Roller Setup
+The retainer roller controls how tightly cards are held. Proper calibration is essential:
+
+1. **Load first card**: Place one card into the scanner and slide it under the retainer roller
+2. **Set light resistance**: Adjust the screw on the retainer roller until you feel very light resistance on the card
+3. **Test with second card**: Place a second card on top. It should experience noticeable resistance from the retainer roller
+4. **Verify calibration**: Once adjusted correctly, the mechanism feeds exactly one card reliably
 
 ## Documentation
 
